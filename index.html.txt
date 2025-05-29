@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#343a40">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="Fiche Juge SBF">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="description" content="Fiche de juge électronique pour la Savate Boxe Française">
+    <link rel="manifest" href="manifest.json">
+    <title>Fiche de Juge - Savate Boxe Française</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        
+        .header-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+            gap: 20px;
+        }
+        
+        .type-selection {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            flex: 1;
+        }
+        
+        .type-selection label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: bold;
+        }
+        
+        .control-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .export-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            justify-content: center;
+        }
+        
+        .export-button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        
+        .export-button:hover {
+            background-color: #0056b3;
+        }
+        
+        .export-button.excel {
+            background-color: #28a745;
+        }
+        
+        .export-button.excel:hover {
+            background-color: #218838;
+        }
+        
+        .export-button.markdown {
+            background-color: #17a2b8;
+        }
+        
+        .export-button.markdown:hover {
+            background-color: #138496;
+        }
+        
+        .reset-button {
+            background-color: #ff6f00;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        
+        .reset-button:hover {
+            background-color: #e65100;
+        }
+        
+        .undo-button {
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        
+        .undo-button:hover {
+            background-color: #5a6268;
+        }
+        
+        .undo-button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        
+        .judge-info {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+        }
+        
+        .judge-info label {
+            display: inline-block;
+            width: 100px;
+            font-weight: bold;
+        }
+        
+        .judge-info input {
+            width: 300px;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+        }
+        
+        .fighters-section {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            gap: 20px;
+        }
+        
+        .fighter-info {
+            flex: 1;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        
+        .fighter-info.red {
+            background-color: #ffcdd2;
+            border: 2px solid #d32f2f;
+        }
+        
+        .fighter-info.blue {
+            background-color: #bbdefb;
+            border: 2px solid #1976d2;
+        }
+        
+        .fighter-info h3 {
+            margin: 0 0 10px 0;
+            text-align: center;
+            font-size: 14px;
+        }
+        
+        .fighter-info input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            box-sizing: border-box;
+        }
+        
+        .scoring-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            table-layout: fixed;
+        }
+        
+        .scoring-table th,
+        .scoring-table td {
+            border: 2px solid #4a4a4a;
+            padding: 10px;
+            text-align: center;
+        }
+        
+        .scoring-table td.reprise-cell {
+            width: 80px;
+            min-width: 80px;
+            max-width: 80px;
+        }
+        
+        .scoring-table th:nth-child(2),
+        .scoring-table th:nth-child(5) {
+            width: 80px;
+            min-width: 80px;
+            max-width: 80px;
+        }
+        
+        /* Forcer les largeurs des colonnes */
+        .scoring-table col:nth-child(1) { width: 150px; }
+        .scoring-table col:nth-child(2) { width: 80px; }
+        .scoring-table col:nth-child(3) { width: 70px; }
+        .scoring-table col:nth-child(4) { width: 70px; }
+        .scoring-table col:nth-child(5) { width: 80px; }
+        .scoring-table col:nth-child(6) { width: 70px; }
+        .scoring-table col:nth-child(7) { width: 70px; }
+        
+        .scoring-table th {
+            background-color: #343a40;
+            color: white;
+        }
+        
+        .corner-red {
+            background-color: #ffcdd2;
+        }
+        
+        .corner-blue {
+            background-color: #bbdefb;
+        }
+        
+        .score-select {
+            width: 80px;
+            padding: 5px;
+            text-align: center;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        
+        .score-select:disabled {
+            background-color: #e9ecef;
+            cursor: not-allowed;
+        }
+        
+        .warning-cell {
+            position: relative;
+            min-width: 80px;
+            height: 40px;
+            font-weight: bold;
+            font-size: 18px;
+            letter-spacing: 5px;
+            cursor: pointer;
+            user-select: none;
+        }
+        
+        .warning-cell.full {
+            background-color: #ffcdd2;
+        }
+        
+        .subtotal {
+            font-weight: bold;
+            background-color: #f8f9fa;
+        }
+        
+        .subtotal td:first-child {
+            text-align: left;
+            padding-left: 10px;
+        }
+        
+        .notation-cell {
+            font-size: 18px;
+            padding: 3px;
+            width: 150px;
+            min-width: 150px;
+            max-width: 150px;
+            line-height: 1.2;
+            color: #28a745;
+        }
+        
+        .scoring-table td:first-child {
+            font-weight: bold;
+            text-align: center;
+            width: 150px;
+            min-width: 150px;
+        }
+        
+        .subtotal td:first-child,
+        .total td:first-child,
+        .decision-row td:first-child {
+            width: 150px;
+            min-width: 150px;
+            white-space: nowrap;
+        }
+        
+        .total {
+            font-weight: bold;
+        }
+        
+        .total .corner-red {
+            background-color: #ffcdd2;
+            color: black;
+            font-weight: bold;
+        }
+        
+        .total .corner-blue {
+            background-color: #bbdefb;
+            color: black;
+            font-weight: bold;
+        }
+        
+        .decision-row {
+            background-color: #e1bee7;
+            font-weight: bold;
+        }
+        
+        .decision-cell {
+            font-size: 18px;
+            padding: 15px;
+        }
+        
+        .rules-info {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        
+        .rules-info h3 {
+            margin-top: 0;
+        }
+        
+        .error {
+            border-color: #dc3545 !important;
+            background-color: #f8d7da !important;
+        }
+        
+        .disqualification {
+            background-color: #d32f2f !important;
+            color: white !important;
+            font-weight: bold;
+            padding: 10px;
+            text-align: center;
+            animation: blink 1s infinite;
+        }
+        
+        @keyframes blink {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        .score-input {
+            width: 60px;
+            padding: 5px;
+            text-align: center;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            font-size: 16px;
+        }
+        
+        .hidden-row {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>FICHE DE JUGE - SAVATE BOXE FRANÇAISE</h1>
+        
+        <div class="header-section">
+            <div class="type-selection">
+                <label>
+                    <input type="radio" name="fightType" value="assaut" checked onchange="updateRounds()">
+                    Assaut (3 reprises)
+                </label>
+                <label>
+                    <input type="radio" name="fightType" value="combat2espoirs" onchange="updateRounds()">
+                    Combat 2ème Série Espoirs (3 reprises)
+                </label>
+                <label>
+                    <input type="radio" name="fightType" value="combat2seniors" onchange="updateRounds()">
+                    Combat 2ème Série Séniors (4 reprises)
+                </label>
+                <label>
+                    <input type="radio" name="fightType" value="combat1juniors" onchange="updateRounds()">
+                    Combat 1ère Série Juniors (4 reprises)
+                </label>
+                <label>
+                    <input type="radio" name="fightType" value="combat1seniors" onchange="updateRounds()">
+                    Combat 1ère Série Séniors (5 reprises)
+                </label>
+            </div>
+            <div class="control-buttons">
+                <button class="reset-button" onclick="resetForm()">RÉINITIALISER</button>
+                <button class="undo-button" id="undoButton" onclick="undoLastAction()" disabled>ANNULER DERNIÈRE ACTION</button>
+            </div>
+        </div>
+        
+        <div class="judge-info">
+            <label>Nom:</label>
+            <input type="text" id="judgeName" placeholder="Nom du juge">
+            <br><br>
+            <label>N° Juge:</label>
+            <input type="text" id="judgeNumber" placeholder="Numéro">
+        </div>
+        
+        <div class="fighters-section">
+            <div class="fighter-info red">
+                <h3>TIREUR COIN ROUGE</h3>
+                <input type="text" id="fighterRed" placeholder="Nom du tireur">
+            </div>
+            <div class="fighter-info blue">
+                <h3>TIREUR COIN BLEU</h3>
+                <input type="text" id="fighterBlue" placeholder="Nom du tireur">
+            </div>
+        </div>
+        
+        <table class="scoring-table">
+            <colgroup>
+                <col style="width: 150px;">
+                <col style="width: 80px;">
+                <col style="width: 70px;">
+                <col style="width: 70px;">
+                <col style="width: 80px;">
+                <col style="width: 70px;">
+                <col style="width: 70px;">
+            </colgroup>
+            <thead>
+                <tr>
+                    <th rowspan="2" style="width: 150px; min-width: 150px;">NOTATION</th>
+                    <th colspan="3" style="background-color: #ef5350; color: white;">COIN ROUGE</th>
+                    <th colspan="3" style="background-color: #42a5f5; color: white;">COIN BLEU</th>
+                </tr>
+                <tr>
+                    <th class="corner-red">Reprise</th>
+                    <th class="corner-red">NOTE</th>
+                    <th class="corner-red">AVT</th>
+                    <th class="corner-blue">Reprise</th>
+                    <th class="corner-blue">NOTE</th>
+                    <th class="corner-blue">AVT</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr id="round1">
+                    <td rowspan="5" style="vertical-align: middle;" class="notation-cell">
+                        <small>
+                            Égalité: 2/2<br>
+                            Gagné: 3/2<br>
+                            Dominé: 3/1<br>
+                            Non décision: X/X<br>
+                            Avertissement: -1<br>
+                            Bonus: +1
+                        </small>
+                    </td>
+                    <td class="corner-red reprise-cell">1</td>
+                    <td class="corner-red">
+                        <select class="score-select" id="red1" onchange="validateAndUpdateScores(1)">
+                            <option value="">-</option>
+                            <option value="3">3</option>
+                            <option value="2">2</option>
+                            <option value="1">1</option>
+                        </select>
+                    </td>
+                    <td class="corner-red warning-cell" id="redAvtCell1" onclick="toggleWarning('red', 1)"></td>
+                    <td class="corner-blue reprise-cell">1</td>
+                    <td class="corner-blue">
+                        <select class="score-select" id="blue1" onchange="validateAndUpdateScores(1)">
+                            <option value="">-</option>
+                            <option value="3">3</option>
+                            <option value="2">2</option>
+                            <option value="1">1</option>
+                        </select>
+                    </td>
+                    <td class="corner-blue warning-cell" id="blueAvtCell1" onclick="toggleWarning('blue', 1)"></td>
+                </tr>
+                <tr id="round2">
+                    <td class="corner-red reprise-cell">2</td>
+                    <td class="corner-red">
+                        <select class="score-select" id="red2" onchange="validateAndUpdateScores(2)">
+                            <option value="">-</option>
+                            <option value="3">3</option>
+                            <option value="2">2</option>
+                            <option value="1">1</option>
+                        </select>
+                    </td>
+                    <td class="corner-red warning-cell" id="redAvtCell2" onclick="toggleWarning('red', 2)"></td>
+                    <td class="corner-blue reprise-cell">2</td>
+                    <td class="corner-blue">
+                        <select class="score-select" id="blue2" onchange="validateAndUpdateScores(2)">
+                            <option value="">-</option>
+                            <option value="3">3</option>
+                            <option value="2">2</option>
+                            <option value="1">1</option>
+                        </select>
+                    </td>
+                    <td class="corner-blue warning-cell" id="blueAvtCell2" onclick="toggleWarning('blue', 2)"></td>
+                </tr>
+                <tr id="round3">
+                    <td class="corner-red reprise-cell">3</td>
+                    <td class="corner-red">
+                        <select class="score-select" id="red3" onchange="validateAndUpdateScores(3)">
+                            <option value="">-</option>
+                            <option value="3">3</option>
+                            <option value="2">2</option>
+                            <option value="1">1</option>
+                        </select>
+                    </td>
+                    <td class="corner-red warning-cell" id="redAvtCell3" onclick="toggleWarning('red', 3)"></td>
+                    <td class="corner-blue reprise-cell">3</td>
+                    <td class="corner-blue">
+                        <select class="score-select" id="blue3" onchange="validateAndUpdateScores(3)">
+                            <option value="">-</option>
+                            <option value="3">3</option>
+                            <option value="2">2</option>
+                            <option value="1">1</option>
+                        </select>
+                    </td>
+                    <td class="corner-blue warning-cell" id="blueAvtCell3" onclick="toggleWarning('blue', 3)"></td>
+                </tr>
+                <tr id="round4" class="hidden-row">
+                    <td class="corner-red reprise-cell">4</td>
+                    <td class="corner-red">
+                        <select class="score-select" id="red4" onchange="validateAndUpdateScores(4)">
+                            <option value="">-</option>
+                            <option value="3">3</option>
+                            <option value="2">2</option>
+                            <option value="1">1</option>
+                        </select>
+                    </td>
+                    <td class="corner-red warning-cell" id="redAvtCell4" onclick="toggleWarning('red', 4)"></td>
+                    <td class="corner-blue reprise-cell">4</td>
+                    <td class="corner-blue">
+                        <select class="score-select" id="blue4" onchange="validateAndUpdateScores(4)">
+                            <option value="">-</option>
+                            <option value="3">3</option>
+                            <option value="2">2</option>
+                            <option value="1">1</option>
+                        </select>
+                    </td>
+                    <td class="corner-blue warning-cell" id="blueAvtCell4" onclick="toggleWarning('blue', 4)"></td>
+                </tr>
+                <tr id="round5" class="hidden-row">
+                    <td class="corner-red reprise-cell">5</td>
+                    <td class="corner-red">
+                        <select class="score-select" id="red5" onchange="validateAndUpdateScores(5)">
+                            <option value="">-</option>
+                            <option value="3">3</option>
+                            <option value="2">2</option>
+                            <option value="1">1</option>
+                        </select>
+                    </td>
+                    <td class="corner-red warning-cell" id="redAvtCell5" onclick="toggleWarning('red', 5)"></td>
+                    <td class="corner-blue reprise-cell">5</td>
+                    <td class="corner-blue">
+                        <select class="score-select" id="blue5" onchange="validateAndUpdateScores(5)">
+                            <option value="">-</option>
+                            <option value="3">3</option>
+                            <option value="2">2</option>
+                            <option value="1">1</option>
+                        </select>
+                    </td>
+                    <td class="corner-blue warning-cell" id="blueAvtCell5" onclick="toggleWarning('blue', 5)"></td>
+                </tr>
+                <tr class="subtotal">
+                    <td style="text-align: left; padding-left: 10px;">Sous TOTAUX 1</td>
+                    <td colspan="2" class="corner-red" style="text-align: center;"><span id="redSubtotal1">0</span></td>
+                    <td class="corner-red"></td>
+                    <td colspan="2" class="corner-blue" style="text-align: center;"><span id="blueSubtotal1">0</span></td>
+                    <td class="corner-blue"></td>
+                </tr>
+                <tr class="subtotal">
+                    <td style="text-align: left; padding-left: 10px;">Avertissements</td>
+                    <td colspan="2" class="corner-red" style="text-align: center;"><span id="redWarnings">0</span></td>
+                    <td class="corner-red"></td>
+                    <td colspan="2" class="corner-blue" style="text-align: center;"><span id="blueWarnings">0</span></td>
+                    <td class="corner-blue"></td>
+                </tr>
+                <tr class="subtotal">
+                    <td style="text-align: left; padding-left: 10px;">Sous TOTAUX 2</td>
+                    <td colspan="2" class="corner-red" style="text-align: center;"><span id="redSubtotal2">0</span></td>
+                    <td class="corner-red"></td>
+                    <td colspan="2" class="corner-blue" style="text-align: center;"><span id="blueSubtotal2">0</span></td>
+                    <td class="corner-blue"></td>
+                </tr>
+                <tr class="subtotal">
+                    <td style="text-align: left; padding-left: 10px;">Sous TOTAUX 2</td>
+                    <td colspan="2" class="corner-red" style="text-align: center;"><span id="redSubtotal2">0</span></td>
+                    <td class="corner-red"></td>
+                    <td colspan="2" class="corner-blue" style="text-align: center;"><span id="blueSubtotal2">0</span></td>
+                    <td class="corner-blue"></td>
+                </tr>
+                <tr>
+                    <td>Bonus</td>
+                    <td colspan="2" class="corner-red" style="text-align: center;">
+                        <input type="number" class="score-input" id="redBonus" min="0" max="1" value="0" onchange="validateBonus()">
+                    </td>
+                    <td class="corner-red"></td>
+                    <td colspan="2" class="corner-blue" style="text-align: center;">
+                        <input type="number" class="score-input" id="blueBonus" min="0" max="1" value="0" onchange="validateBonus()">
+                    </td>
+                    <td class="corner-blue"></td>
+                </tr>
+                <tr class="total">
+                    <td>TOTAUX</td>
+                    <td colspan="2" class="corner-red" style="text-align: center;"><span id="redTotal">0</span></td>
+                    <td class="corner-red"></td>
+                    <td colspan="2" class="corner-blue" style="text-align: center;"><span id="blueTotal">0</span></td>
+                    <td class="corner-blue"></td>
+                </tr>
+                <tr class="decision-row">
+                    <td>DÉCISION</td>
+                    <td colspan="6" class="decision-cell"><span id="decision">-</span></td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <div id="disqualificationMessage" style="display: none;" class="disqualification">
+            <h2>DISQUALIFICATION</h2>
+            <p id="disqualificationText"></p>
+        </div>
+        
+        <div class="export-buttons">
+            <button class="export-button excel" onclick="exportToExcel()">📊 Exporter en Excel</button>
+            <button class="export-button markdown" onclick="exportToMarkdown()">📝 Exporter en Markdown</button>
+        </div>
+        
+        <div class="rules-info">
+            <h3>Règles de notation:</h3>
+            <ul>
+                <li>Scores autorisés par reprise : 3-2 (gagné), 3-1 (dominé) ou 2-2 (égalité)</li>
+                <li>Si un tireur a 3, l'autre ne peut pas avoir 3 pour la même reprise</li>
+                <li>Le bonus ne peut être attribué qu'à un seul coin</li>
+                <li>Cliquez sur la colonne AVT pour ajouter un avertissement (jusqu'à 3 A par cellule)</li>
+                <li>Maximum 3 avertissements sur l'ensemble de la rencontre</li>
+                <li>Au 3ème avertissement, le tireur est disqualifié</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Stockage des avertissements
+        const warnings = {
+            red: {},
+            blue: {}
+        };
+        
+        // Historique des actions pour la fonction annuler
+        let actionHistory = [];
+        
+        // Nombre de reprises actives
+        let activeRounds = 3;
+        
+        // Fonction pour mettre à jour le nombre de reprises selon le type
+        function updateRounds() {
+            const fightType = document.querySelector('input[name="fightType"]:checked').value;
+            
+            // Déterminer le nombre de reprises
+            switch(fightType) {
+                case 'assaut':
+                case 'combat2espoirs':
+                    activeRounds = 3;
+                    break;
+                case 'combat2seniors':
+                case 'combat1juniors':
+                    activeRounds = 4;
+                    break;
+                case 'combat1seniors':
+                    activeRounds = 5;
+                    break;
+            }
+            
+            // Ajuster le rowspan de la cellule NOTATION
+            const notationCell = document.querySelector('.notation-cell');
+            if (notationCell) {
+                notationCell.rowSpan = activeRounds;
+            }
+            
+            // Afficher/masquer les lignes de reprises
+            for (let i = 1; i <= 5; i++) {
+                const row = document.getElementById(`round${i}`);
+                if (i <= activeRounds) {
+                    row.classList.remove('hidden-row');
+                } else {
+                    row.classList.add('hidden-row');
+                    // Réinitialiser les valeurs des reprises cachées
+                    document.getElementById(`red${i}`).value = '';
+                    document.getElementById(`blue${i}`).value = '';
+                    warnings.red[i] = 0;
+                    warnings.blue[i] = 0;
+                    updateWarningDisplay('red', i);
+                    updateWarningDisplay('blue', i);
+                }
+            }
+            
+            calculateTotals();
+        }
+        
+        // Fonction pour sauvegarder l'état actuel
+        function saveState() {
+            const state = {
+                warnings: JSON.parse(JSON.stringify(warnings)),
+                scores: {},
+                bonus: {
+                    red: document.getElementById('redBonus').value,
+                    blue: document.getElementById('blueBonus').value
+                }
+            };
+            
+            // Sauvegarder les scores
+            for (let i = 1; i <= 5; i++) {
+                state.scores[`red${i}`] = document.getElementById(`red${i}`).value;
+                state.scores[`blue${i}`] = document.getElementById(`blue${i}`).value;
+            }
+            
+            actionHistory.push(state);
+            
+            // Limiter l'historique à 50 actions
+            if (actionHistory.length > 50) {
+                actionHistory.shift();
+            }
+            
+            // Activer le bouton annuler
+            document.getElementById('undoButton').disabled = false;
+        }
+        
+        // Fonction pour annuler la dernière action
+        function undoLastAction() {
+            if (actionHistory.length === 0) return;
+            
+            const previousState = actionHistory.pop();
+            
+            // Restaurer les avertissements
+            Object.assign(warnings, previousState.warnings);
+            
+            // Restaurer l'affichage des avertissements
+            for (let color of ['red', 'blue']) {
+                for (let i = 1; i <= 5; i++) {
+                    updateWarningDisplay(color, i);
+                }
+            }
+            
+            // Restaurer les scores
+            for (let key in previousState.scores) {
+                document.getElementById(key).value = previousState.scores[key];
+            }
+            
+            // Restaurer les bonus
+            document.getElementById('redBonus').value = previousState.bonus.red;
+            document.getElementById('blueBonus').value = previousState.bonus.blue;
+            
+            // Recalculer les totaux
+            calculateTotals();
+            
+            // Vérifier la disqualification
+            checkDisqualification('red');
+            checkDisqualification('blue');
+            
+            // Désactiver le bouton si plus d'historique
+            if (actionHistory.length === 0) {
+                document.getElementById('undoButton').disabled = true;
+            }
+        }
+        
+        // Fonction pour valider et mettre à jour les scores
+        function validateAndUpdateScores(round) {
+            const redSelect = document.getElementById(`red${round}`);
+            const blueSelect = document.getElementById(`blue${round}`);
+            
+            const redValue = parseInt(redSelect.value) || 0;
+            const blueValue = parseInt(blueSelect.value) || 0;
+            
+            // Si un des deux a la valeur 3, l'autre ne peut pas l'avoir
+            if (redValue === 3 && blueValue === 3) {
+                alert(`Reprise ${round}: Les deux tireurs ne peuvent pas avoir la note 3 simultanément!`);
+                
+                // Réinitialiser la dernière valeur modifiée
+                if (document.activeElement === redSelect) {
+                    redSelect.value = '';
+                } else {
+                    blueSelect.value = '';
+                }
+                return;
+            }
+            
+            // Si les deux valeurs sont définies, vérifier les combinaisons valides
+            if (redValue && blueValue) {
+                const isValidCombination = 
+                    (redValue === 3 && blueValue === 2) ||
+                    (redValue === 2 && blueValue === 3) ||
+                    (redValue === 3 && blueValue === 1) ||
+                    (redValue === 1 && blueValue === 3) ||
+                    (redValue === 2 && blueValue === 2);
+                
+                if (!isValidCombination) {
+                    alert(`Reprise ${round}: Seuls les scores 3-2, 3-1 ou 2-2 sont autorisés!`);
+                    
+                    // Réinitialiser la dernière valeur modifiée
+                    if (document.activeElement === redSelect) {
+                        redSelect.value = '';
+                    } else {
+                        blueSelect.value = '';
+                    }
+                    return;
+                }
+            }
+            
+            saveState(); // Sauvegarder l'état après validation
+            calculateTotals();
+        }
+        
+        // Fonction pour basculer les avertissements
+        function toggleWarning(color, round) {
+            saveState(); // Sauvegarder l'état avant la modification
+            
+            // Calculer le total actuel des avertissements pour ce tireur
+            let currentTotal = 0;
+            for (let r in warnings[color]) {
+                currentTotal += warnings[color][r] || 0;
+            }
+            
+            if (!warnings[color][round]) {
+                warnings[color][round] = 0;
+            }
+            
+            const currentCellWarnings = warnings[color][round];
+            
+            // Cycle: 0 -> 1 -> 2 -> 3 -> 0
+            if (currentCellWarnings < 3) {
+                // Vérifier si on peut ajouter un avertissement
+                if (currentTotal < 3) {
+                    warnings[color][round]++;
+                } else {
+                    alert('Maximum 3 avertissements par tireur sur l\'ensemble de la rencontre!');
+                    undoLastAction();
+                    return;
+                }
+            } else {
+                // Réinitialiser à 0
+                warnings[color][round] = 0;
+            }
+            
+            updateWarningDisplay(color, round);
+            checkDisqualification(color);
+            calculateTotals();
+        }
+        
+        // Mettre à jour l'affichage des avertissements
+        function updateWarningDisplay(color, round) {
+            const cell = document.getElementById(`${color}AvtCell${round}`);
+            const count = warnings[color][round] || 0;
+            
+            if (count === 0) {
+                cell.textContent = '';
+                cell.classList.remove('full');
+            } else {
+                cell.textContent = 'A'.repeat(count);
+                if (count >= 3) {
+                    cell.classList.add('full');
+                } else {
+                    cell.classList.remove('full');
+                }
+            }
+        }
+        
+        // Vérifier la disqualification
+        function checkDisqualification(color) {
+            let totalWarnings = 0;
+            
+            for (let round in warnings[color]) {
+                totalWarnings += warnings[color][round] || 0;
+            }
+            
+            if (totalWarnings >= 3) {
+                const fighterName = document.getElementById(`fighter${color.charAt(0).toUpperCase() + color.slice(1)}`).value || `Tireur ${color === 'red' ? 'rouge' : 'bleu'}`;
+                const opponentColor = color === 'red' ? 'blue' : 'red';
+                const opponentName = document.getElementById(`fighter${opponentColor.charAt(0).toUpperCase() + opponentColor.slice(1)}`).value || `Tireur ${opponentColor === 'red' ? 'rouge' : 'bleu'}`;
+                
+                document.getElementById('disqualificationMessage').style.display = 'block';
+                document.getElementById('disqualificationText').textContent = 
+                    `${fighterName} est disqualifié(e) pour 3 avertissements. ${opponentName} est déclaré(e) vainqueur!`;
+                
+                // Désactiver tous les selects
+                document.querySelectorAll('.score-select').forEach(select => {
+                    select.disabled = true;
+                });
+                
+                // Mettre à jour la décision
+                const decisionElement = document.getElementById('decision');
+                decisionElement.textContent = `VICTOIRE ${opponentColor === 'red' ? 'COIN ROUGE' : 'COIN BLEU'} PAR DISQUALIFICATION - ${opponentName}`;
+                decisionElement.style.color = opponentColor === 'red' ? '#dc3545' : '#007bff';
+            } else {
+                document.getElementById('disqualificationMessage').style.display = 'none';
+                
+                // Réactiver les selects si pas de disqualification
+                document.querySelectorAll('.score-select').forEach(select => {
+                    select.disabled = false;
+                });
+            }
+        }
+        
+        // Validation des bonus
+        function validateBonus() {
+            saveState(); // Sauvegarder l'état avant la modification
+            
+            const redBonus = document.getElementById('redBonus');
+            const blueBonus = document.getElementById('blueBonus');
+            
+            redBonus.classList.remove('error');
+            blueBonus.classList.remove('error');
+            
+            const redValue = parseInt(redBonus.value) || 0;
+            const blueValue = parseInt(blueBonus.value) || 0;
+            
+            if (redValue === 1 && blueValue === 1) {
+                redBonus.classList.add('error');
+                blueBonus.classList.add('error');
+                alert('Le bonus ne peut être attribué qu\'à un seul coin!');
+                
+                // Annuler la dernière action
+                undoLastAction();
+                return;
+            }
+            
+            calculateTotals();
+        }
+        
+        // Calcul des totaux
+        function calculateTotals() {
+            let redScore = 0;
+            let blueScore = 0;
+            let redWarningTotal = 0;
+            let blueWarningTotal = 0;
+            
+            // Calculer les scores des reprises actives uniquement
+            for (let i = 1; i <= activeRounds; i++) {
+                const redValue = parseInt(document.getElementById(`red${i}`).value) || 0;
+                const blueValue = parseInt(document.getElementById(`blue${i}`).value) || 0;
+                
+                redScore += redValue;
+                blueScore += blueValue;
+            }
+            
+            // Calculer les avertissements
+            for (let round in warnings.red) {
+                if (round <= activeRounds) {
+                    redWarningTotal += warnings.red[round] || 0;
+                }
+            }
+            for (let round in warnings.blue) {
+                if (round <= activeRounds) {
+                    blueWarningTotal += warnings.blue[round] || 0;
+                }
+            }
+            
+            // Afficher sous-total 1
+            document.getElementById('redSubtotal1').textContent = redScore;
+            document.getElementById('blueSubtotal1').textContent = blueScore;
+            
+            // Afficher avertissements (valeur négative)
+            document.getElementById('redWarnings').textContent = redWarningTotal > 0 ? -redWarningTotal : 0;
+            document.getElementById('blueWarnings').textContent = blueWarningTotal > 0 ? -blueWarningTotal : 0;
+            
+            // Calculer sous-total 2
+            const redSubtotal2 = redScore - redWarningTotal;
+            const blueSubtotal2 = blueScore - blueWarningTotal;
+            document.getElementById('redSubtotal2').textContent = redSubtotal2;
+            document.getElementById('blueSubtotal2').textContent = blueSubtotal2;
+            
+            // Ajouter les bonus
+            const redBonus = parseInt(document.getElementById('redBonus').value) || 0;
+            const blueBonus = parseInt(document.getElementById('blueBonus').value) || 0;
+            
+            // Calculer totaux finaux
+            const redTotal = redSubtotal2 + redBonus;
+            const blueTotal = blueSubtotal2 + blueBonus;
+            
+            document.getElementById('redTotal').textContent = redTotal;
+            document.getElementById('blueTotal').textContent = blueTotal;
+            
+            // Déterminer la décision (sauf si disqualification)
+            if (document.getElementById('disqualificationMessage').style.display === 'none') {
+                updateDecision(redTotal, blueTotal);
+            }
+        }
+        
+        // Mettre à jour la décision
+        function updateDecision(redTotal, blueTotal) {
+            const decisionElement = document.getElementById('decision');
+            const redName = document.getElementById('fighterRed').value || 'Tireur rouge';
+            const blueName = document.getElementById('fighterBlue').value || 'Tireur bleu';
+            
+            if (redTotal > blueTotal) {
+                decisionElement.textContent = `VICTOIRE COIN ROUGE - ${redName}`;
+                decisionElement.style.color = '#dc3545';
+            } else if (blueTotal > redTotal) {
+                decisionElement.textContent = `VICTOIRE COIN BLEU - ${blueName}`;
+                decisionElement.style.color = '#007bff';
+            } else if (redTotal === blueTotal && redTotal > 0) {
+                decisionElement.textContent = 'ÉGALITÉ';
+                decisionElement.style.color = '#6c757d';
+            } else {
+                decisionElement.textContent = '-';
+                decisionElement.style.color = '#000';
+            }
+        }
+        
+        // Réinitialiser le formulaire
+        function resetForm() {
+            if (confirm('Êtes-vous sûr de vouloir réinitialiser la fiche?')) {
+                // Réinitialiser complètement l'objet warnings
+                warnings.red = {};
+                warnings.blue = {};
+                
+                // Réinitialiser tous les selects
+                for (let i = 1; i <= 5; i++) {
+                    const redSelect = document.getElementById(`red${i}`);
+                    const blueSelect = document.getElementById(`blue${i}`);
+                    if (redSelect) redSelect.value = '';
+                    if (blueSelect) blueSelect.value = '';
+                }
+                
+                // Réinitialiser les inputs numériques
+                document.getElementById('redBonus').value = '0';
+                document.getElementById('blueBonus').value = '0';
+                document.getElementById('redBonus').classList.remove('error');
+                document.getElementById('blueBonus').classList.remove('error');
+                
+                // Réinitialiser l'affichage des avertissements
+                for (let i = 1; i <= 5; i++) {
+                    const redCell = document.getElementById(`redAvtCell${i}`);
+                    const blueCell = document.getElementById(`blueAvtCell${i}`);
+                    if (redCell) {
+                        redCell.textContent = '';
+                        redCell.classList.remove('full');
+                    }
+                    if (blueCell) {
+                        blueCell.textContent = '';
+                        blueCell.classList.remove('full');
+                    }
+                }
+                
+                // Réinitialiser les infos
+                document.getElementById('judgeName').value = '';
+                document.getElementById('judgeNumber').value = '';
+                document.getElementById('fighterRed').value = '';
+                document.getElementById('fighterBlue').value = '';
+                
+                // Réinitialiser les totaux
+                document.getElementById('redSubtotal1').textContent = '0';
+                document.getElementById('blueSubtotal1').textContent = '0';
+                document.getElementById('redWarnings').textContent = '0';
+                document.getElementById('blueWarnings').textContent = '0';
+                document.getElementById('redSubtotal2').textContent = '0';
+                document.getElementById('blueSubtotal2').textContent = '0';
+                document.getElementById('redTotal').textContent = '0';
+                document.getElementById('blueTotal').textContent = '0';
+                document.getElementById('decision').textContent = '-';
+                document.getElementById('decision').style.color = '#000';
+                
+                // Cacher le message de disqualification
+                document.getElementById('disqualificationMessage').style.display = 'none';
+                
+                // Réactiver tous les selects
+                document.querySelectorAll('.score-select').forEach(select => {
+                    select.disabled = false;
+                });
+                
+                // Réinitialiser l'historique
+                actionHistory = [];
+                document.getElementById('undoButton').disabled = true;
+                
+                // Réinitialiser le type de combat
+                document.querySelector('input[name="fightType"][value="assaut"]').checked = true;
+                updateRounds();
+            }
+        }
+        
+        // Écouter les changements sur les noms des tireurs pour mettre à jour la décision
+        document.getElementById('fighterRed').addEventListener('input', calculateTotals);
+        document.getElementById('fighterBlue').addEventListener('input', calculateTotals);
+        
+        // Fonction pour exporter en Excel
+        function exportToExcel() {
+            // Créer un tableau de données
+            const data = [];
+            
+            // En-tête
+            data.push(['FICHE DE JUGE - SAVATE BOXE FRANÇAISE']);
+            data.push([]);
+            
+            // Type de rencontre
+            const fightType = document.querySelector('input[name="fightType"]:checked').nextSibling.textContent;
+            data.push(['Type de rencontre:', fightType]);
+            data.push([]);
+            
+            // Informations du juge
+            data.push(['Juge:', document.getElementById('judgeName').value || 'Non renseigné']);
+            data.push(['N° Juge:', document.getElementById('judgeNumber').value || 'Non renseigné']);
+            data.push([]);
+            
+            // Informations des tireurs
+            data.push(['TIREUR COIN ROUGE:', document.getElementById('fighterRed').value || 'Non renseigné']);
+            data.push(['TIREUR COIN BLEU:', document.getElementById('fighterBlue').value || 'Non renseigné']);
+            data.push([]);
+            
+            // Tableau des scores
+            data.push(['', 'COIN ROUGE', '', '', 'COIN BLEU', '', '']);
+            data.push(['Reprise', 'Reprise', 'NOTE', 'AVT', 'Reprise', 'NOTE', 'AVT']);
+            
+            // Scores par reprise
+            for (let i = 1; i <= activeRounds; i++) {
+                const redScore = document.getElementById(`red${i}`).value || '-';
+                const blueScore = document.getElementById(`blue${i}`).value || '-';
+                const redAvt = warnings.red[i] ? 'A'.repeat(warnings.red[i]) : '';
+                const blueAvt = warnings.blue[i] ? 'A'.repeat(warnings.blue[i]) : '';
+                
+                data.push([`Reprise ${i}`, i, redScore, redAvt, i, blueScore, blueAvt]);
+            }
+            
+            data.push([]);
+            
+            // Totaux
+            data.push(['Sous TOTAUX 1', '', document.getElementById('redSubtotal1').textContent, '', '', document.getElementById('blueSubtotal1').textContent, '']);
+            data.push(['Avertissements', '', document.getElementById('redWarnings').textContent, '', '', document.getElementById('blueWarnings').textContent, '']);
+            data.push(['Sous TOTAUX 2', '', document.getElementById('redSubtotal2').textContent, '', '', document.getElementById('blueSubtotal2').textContent, '']);
+            data.push(['Bonus', '', document.getElementById('redBonus').value, '', '', document.getElementById('blueBonus').value, '']);
+            data.push(['TOTAUX', '', document.getElementById('redTotal').textContent, '', '', document.getElementById('blueTotal').textContent, '']);
+            data.push([]);
+            data.push(['DÉCISION:', document.getElementById('decision').textContent]);
+            
+            // Créer un CSV
+            let csv = '';
+            data.forEach(row => {
+                csv += row.map(cell => `"${cell}"`).join(',') + '\n';
+            });
+            
+            // Télécharger le fichier
+            const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', `fiche_juge_${new Date().toISOString().slice(0,10)}.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+        
+        // Fonction pour exporter en Markdown
+        function exportToMarkdown() {
+            let markdown = '# FICHE DE JUGE - SAVATE BOXE FRANÇAISE\n\n';
+            
+            // Type de rencontre
+            const fightType = document.querySelector('input[name="fightType"]:checked').nextSibling.textContent;
+            markdown += `## ${fightType}\n\n`;
+            
+            // Informations du juge
+            markdown += '### Informations du juge\n';
+            markdown += `- **Nom:** ${document.getElementById('judgeName').value || 'Non renseigné'}\n`;
+            markdown += `- **N° Juge:** ${document.getElementById('judgeNumber').value || 'Non renseigné'}\n\n`;
+            
+            // Informations des tireurs
+            markdown += '### Tireurs\n';
+            markdown += `- **COIN ROUGE:** ${document.getElementById('fighterRed').value || 'Non renseigné'}\n`;
+            markdown += `- **COIN BLEU:** ${document.getElementById('fighterBlue').value || 'Non renseigné'}\n\n`;
+            
+            // Tableau des scores
+            markdown += '### Scores par reprise\n\n';
+            markdown += '| Reprise | Coin Rouge | Avertissements | Coin Bleu | Avertissements |\n';
+            markdown += '|---------|------------|----------------|-----------|----------------|\n';
+            
+            for (let i = 1; i <= activeRounds; i++) {
+                const redScore = document.getElementById(`red${i}`).value || '-';
+                const blueScore = document.getElementById(`blue${i}`).value || '-';
+                const redAvt = warnings.red[i] ? 'A'.repeat(warnings.red[i]) : '-';
+                const blueAvt = warnings.blue[i] ? 'A'.repeat(warnings.blue[i]) : '-';
+                
+                markdown += `| ${i} | ${redScore} | ${redAvt} | ${blueScore} | ${blueAvt} |\n`;
+            }
+            
+            markdown += '\n### Récapitulatif\n\n';
+            markdown += '| | Coin Rouge | Coin Bleu |\n';
+            markdown += '|---|------------|------------|\n';
+            markdown += `| **Sous TOTAUX 1** | ${document.getElementById('redSubtotal1').textContent} | ${document.getElementById('blueSubtotal1').textContent} |\n`;
+            markdown += `| **Avertissements** | ${document.getElementById('redWarnings').textContent} | ${document.getElementById('blueWarnings').textContent} |\n`;
+            markdown += `| **Sous TOTAUX 2** | ${document.getElementById('redSubtotal2').textContent} | ${document.getElementById('blueSubtotal2').textContent} |\n`;
+            markdown += `| **Bonus** | ${document.getElementById('redBonus').value} | ${document.getElementById('blueBonus').value} |\n`;
+            markdown += `| **TOTAUX** | ${document.getElementById('redTotal').textContent} | ${document.getElementById('blueTotal').textContent} |\n`;
+            
+            markdown += `\n### DÉCISION\n\n**${document.getElementById('decision').textContent}**\n`;
+            
+            markdown += `\n---\n_Exporté le ${new Date().toLocaleString('fr-FR')}_`;
+            
+            // Télécharger le fichier
+            const blob = new Blob([markdown], { type: 'text/markdown;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', `fiche_juge_${new Date().toISOString().slice(0,10)}.md`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+        
+        // Initialiser l'affichage des reprises
+        updateRounds();
+    </script>
+</body>
+</html>

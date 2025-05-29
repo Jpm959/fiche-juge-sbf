@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <!-- Fond -->
+  <rect width="512" height="512" rx="56" fill="#343a40"/>
+  
+  <!-- Gants de boxe stylisés -->
+  <!-- Gant gauche (rouge) -->
+  <g transform="translate(128, 180)">
+    <ellipse cx="0" cy="0" rx="80" ry="100" fill="#ef5350" transform="rotate(-20)"/>
+    <ellipse cx="-20" cy="-30" rx="40" ry="50" fill="#ff6b6b" transform="rotate(-20)"/>
+    <circle cx="0" cy="40" r="25" fill="#d32f2f"/>
+  </g>
+  
+  <!-- Gant droit (bleu) -->
+  <g transform="translate(384, 180)">
+    <ellipse cx="0" cy="0" rx="80" ry="100" fill="#42a5f5" transform="rotate(20)"/>
+    <ellipse cx="20" cy="-30" rx="40" ry="50" fill="#5eb8ff" transform="rotate(20)"/>
+    <circle cx="0" cy="40" r="25" fill="#1976d2"/>
+  </g>
+  
+  <!-- Clipboard/Fiche -->
+  <rect x="156" y="280" width="200" height="160" rx="8" fill="#f5f5f5"/>
+  <rect x="156" y="280" width="200" height="40" rx="8" fill="#6c757d"/>
+  
+  <!-- Lignes de notation -->
+  <line x1="176" y1="340" x2="336" y2="340" stroke="#4a4a4a" stroke-width="2"/>
+  <line x1="176" y1="360" x2="336" y2="360" stroke="#4a4a4a" stroke-width="2"/>
+  <line x1="176" y1="380" x2="336" y2="380" stroke="#4a4a4a" stroke-width="2"/>
+  <line x1="176" y1="400" x2="336" y2="400" stroke="#4a4a4a" stroke-width="2"/>
+  <line x1="176" y1="420" x2="336" y2="420" stroke="#4a4a4a" stroke-width="2"/>
+  
+  <!-- Check marks -->
+  <polyline points="186,350 196,360 216,340" stroke="#28a745" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <polyline points="186,390 196,400 216,380" stroke="#28a745" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <!-- Texte SBF -->
+  <text x="256" y="480" font-family="Arial, sans-serif" font-size="48" font-weight="bold" fill="#f5f5f5" text-anchor="middle">SBF</text>
+</svg>
